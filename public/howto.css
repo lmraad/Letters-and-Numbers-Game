@@ -1,0 +1,78 @@
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: 'Corbel';
+}
+
+/*//////////////////////////////////////////////////////////
+//////////////////// HEADER AND TITLE //////////////////////
+//////////////////////////////////////////////////////////*/
+
+#header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-top: 3.888889px;
+    padding-bottom: 5.8333334px;
+    width: 100%;
+    border-bottom: solid rgb(190, 190, 190) 0.777778px;
+}
+
+#title {
+    font-size: 27.222222px;
+    font-family: 'Corbel';
+    color: rgb(74, 111, 182);
+}
+
+#howToIcon {
+    font-size: 27.222222px;
+    font-family:'BIZ UDMincho Medium';
+    color:rgb(255, 255, 255);
+    margin-top: 3.888889px;
+    margin-left: 10px;
+}
+
+#homeIcon {
+    margin-top: 3.888889px;
+    margin-right: 10px;
+}
+
+#howToTitle {
+    font-size: 58.333334px;
+    color:rgb(74, 111, 182);
+}
+
+.pageText {
+    color: rgb(62, 99, 175);
+    font-size: 22px;
+    width: 85%;
+}
+
+.header {
+    font-size: 30px;
+    color: rgb(255, 255, 255);
+    background-color: rgb(111, 144, 202);
+    border-radius: 7px;
+    width: 90%;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.gameButton {
+    font-size: 25px;
+    color: rgb(255, 255, 255);
+    background-color: rgb(62, 99, 175);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 170px;
+    height: 55px;
+    margin-top: 20px;
+    margin-left: 48%;
+    margin-bottom: 20px;
+}

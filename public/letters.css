@@ -1,0 +1,273 @@
+/*
+STILL NEED TO DO:
+- Nothing!
+
+*/
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: 'Corbel';
+}
+
+/*//////////////////////////////////////////////////////////
+//////////////////////// HEADER ////////////////////////////
+//////////////////////////////////////////////////////////*/
+
+#header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-top: 3.888889px;
+    padding-bottom: 5.8333334px;
+    width: 100%;
+    border-bottom: solid rgb(190, 190, 190) 0.777778px;
+}
+
+#title {
+    font-size: 27.222222px;
+    font-family: 'Corbel';
+    color: rgb(74, 111, 182);
+}
+
+#howToIcon {
+    font-size: 27.222222px;
+    font-family:'BIZ UDMincho Medium';
+    color:rgb(74, 111, 182);
+    margin-top: 3.888889px;
+    margin-left: 10px;
+}
+
+#homeIcon {
+    margin-top: 3.888889px;
+    margin-right: 10px;
+}
+
+/*//////////////////////////////////////////////////////////
+///////////////// TITLE AND SELECTION //////////////////////
+//////////////////////////////////////////////////////////*/
+
+#lettersTitle {
+    font-size: 58.333334px;
+    color:rgb(74, 111, 182);
+}
+
+#lettersBoxes {
+    display: flex;
+    justify-content: center;
+    margin-top: 11.6666667px;
+}
+
+.boxClass {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 35px;
+    height: 50.555556px;
+    border: solid rgb(190, 190, 190) 0.7777778px;
+    margin: 1.9444445px;
+}
+
+.highlightedBoxes {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 36.4444444px;
+    height: 42.777778px;
+    background-color: rgb(74, 111, 182);
+    border-top: solid rgb(111, 144, 202) 4.6666667px;
+    border-bottom: solid rgb(62, 99, 175) 4.6666667px;
+    margin: 1.9444445px;
+    color: #ffffff;
+    font-family: 'Bahnschrift SemiBold';
+    font-size: 31.111111px;
+}
+
+/*//////////////////////////////////////////////////////////
+////////////////////// GO BUTTON ///////////////////////////
+//////////////////////////////////////////////////////////*/
+
+.pageText {
+    color: rgb(62, 99, 175);
+    font-size: 23.333333px;
+    width:max-content;
+}
+
+#middleSection {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    min-width: 320px;
+    height: 194.444445px;
+    margin-top: 3.8888889px;
+    margin-left: 20px;
+}
+
+#goButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 143.888889px;
+    height: 143.888889px;
+    background-color: rgb(111, 144, 202);
+    border-radius: 116.666667px;
+    color: #ffffff;
+    font-size: 38.888889px;
+    margin-right: 20px;
+}
+
+/*//////////////////////////////////////////////////////////
+//////////////// KEYBOARD AND LONGEST WORD /////////////////
+//////////////////////////////////////////////////////////*/
+
+#keyboardAndInput {
+    margin-left: 0px;
+    width: 330.1px;
+    height: 368px;
+}
+
+#longestWordSection {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 28px;
+}
+
+#longestWordText {
+    margin-top: 9px;
+    margin-left: 4.8888889px;
+}
+
+#longestWordBox {
+    width: 150px;
+    height: 42.777778px;
+    border: solid rgb(190, 190, 190) 0.7777778px;
+    font-size: 31.111111px;
+    text-align: center;
+    color: rgb(62, 99, 175);
+    margin-left: 35px;
+    margin-bottom: 7.7777778px;
+    font-family: 'Bahnschrift SemiBold';
+    padding-top: 7.777778px;
+}
+
+#input {
+    width: calc(63.777778px * 4 - 25.2777778px);
+    height: 40px;
+    border: solid rgb(190, 190, 190) 0.7777778px;
+    font-size: 31.111111px;
+    margin-bottom: 7.777778px;
+    margin-left: 45px;
+    color: rgb(62, 99, 175);
+    font-family: 'Bahnschrift SemiBold';
+    padding-left: 7.777778px;
+    padding-top: 5.833334px;
+    padding-bottom: 5.833334px;
+}
+
+#keypad {
+    width: 280px;
+    margin-left: 40px;
+}
+
+.keyClass {
+    font-size: 27.222222px;
+    min-width: 54.444445px;
+    min-height: 54.444445px;
+    margin: 3.888889px;
+    border: none;
+    background-color: rgb(111, 144, 202);
+    color: #ffffff;
+    border-radius: 7.777778px;
+}
+
+.played {
+    height: 0px;
+    min-width: 54.444445px;
+    margin: 3.8888889px;
+    visibility: hidden;
+}
+
+/*//////////////////////////////////////////////////////////
+/////////////////////// INVISIBLE //////////////////////////
+//////////////////////////////////////////////////////////*/
+
+.invisible {
+    visibility: hidden;
+    height: 0px !important;
+    width: 0px !important;
+    margin: 0px !important;
+    padding: 0px !important;
+}
+
+/*//////////////////////////////////////////////////////////
+////////////////////// RESULTS PAGE ////////////////////////
+//////////////////////////////////////////////////////////*/
+
+#resultsBox {
+    min-width: 311.111111px;
+    border: solid rgb(190, 190, 190) 0.7777778px;
+    padding: 11.666667px;
+    margin-top: 19.4444445px;
+    margin-bottom: 30px;
+}
+
+#timeUpText {
+    font-size: 35px;
+    color: rgb(62, 99, 175);
+    margin-bottom: 7.777778px;
+}
+
+.resultsPageText {
+    font-size: 23.33333px;
+    color: rgb(62, 99, 175);
+    margin-bottom: 3.888889px;
+}
+
+#sharingInstructions {
+    margin-left: 19.444445px;
+    margin-right: 19.444445px;
+    margin-top: 320px;
+    color: rgb(62, 99, 175);
+    font-size: 23.33333px;
+}
+
+#bottomSection {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    margin-top: 30px;
+}
+
+#mySolutionText {
+    font-size: 23.33333px;
+    color: rgb(62, 99, 175);
+    margin-bottom: 3.888889px;
+}
+
+#continue {
+    font-size: 27.222222px;
+    width: 150px;
+    height: 50px;
+    margin-left: 50px;
+    text-align: center;
+    padding-top: 10px;
+    background-color: rgb(111, 144, 202);
+    color: #ffffff;
+}
+
+/*//////////////////////////////////////////////////////////
+////////////////////// THE SOLUTION ////////////////////////
+//////////////////////////////////////////////////////////*/
+
+#solutionBox {
+    width: 311.111111px;
+    border: solid rgb(190, 190, 190) 0.7777778px;
+    padding: 11.666667px;
+    margin-top: 50px;
+    font-size: 27.222222px;
+    color: rgb(62, 99, 175);
+    line-height: 1.6;
+}

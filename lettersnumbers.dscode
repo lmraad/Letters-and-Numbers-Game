@@ -1,0 +1,139 @@
+//NEED:
+//Assignment - let, assigning a variable a value
+//Sequence - ifs, else ifs, set of instructions must be followed in order
+//Selection - lots of ifs, which path to take
+//Condition - like computer answering true or false, one option or another, if else
+//Iteration - for loop
+//Modularisation - functions that can be interchangeable, do something but can be swapped out so the program does something else i think
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////////
+//Allows users to only select allowed combinations of numbers for the numbers game//
+////////////////////////////////////////////////////////////////////////////////////
+
+//The variable "lastCharacter" exists, which is the last
+//character in the input box
+
+//The array "numberKeys" exists, and contains all of the keys
+//on the calculator which are numbers
+
+//The keys on the calculator are all divs with ids "key" +
+//a number
+
+FUNCTION legalNumbers (lastCharacter)
+BEGIN
+    //Iteration is demonstrated below in the use of a for loop,
+    //to determine if the last character typed was an allowed number
+    FOR i = 0 TO length of numberKeys STEP 1
+        
+        IF lastCharacter = numberKeys[i] innerHTML THEN
+            //number keys invisible (so another one cannot be typed)
+            key0 className = "empty"
+            key1 className = "empty"
+            key5 className = "empty"
+            key6 className = "empty"
+            key10 className = "empty"
+            key11 className = "empty"
+            //open bracket invisible (so that it cannot be typed)
+            key2 className = "empty"
+            //closed bracket visible
+            key3 className = "keyClass"
+            //clear visible
+            key4 className = "keyClass"
+            //symbols visible
+            key7 className = "keyClass"
+            key8 className = "keyClass"
+            key12 className = "keyClass"
+            key13 className = "keyClass"
+            //backspace visible
+            key9 className = "keyClass"
+            //equals visible
+            key17 className = "keyClass equals"
+        ENDIF
+
+    NEXT variable
+    ENDFOR
+END
+
+//////////////////////////////////////////////////////////////////////////////////
+//Allows users to only submit words within the rules of the game, and validates //
+//the submitted words against an acceptable word list. Also allows users to only//
+//select allowed combinations of letters for the letter game.                   //
+//////////////////////////////////////////////////////////////////////////////////
+
+//The global variable "dictionary" exists, and is an array
+//containing 3000 acceptable English words
+
+//The global variable "letters" exists, and is an array
+//containing the "legal" letters for the round
+
+FUNCTION isLegalWord (word)
+BEGIN
+
+    //Selection is demonstrated below as a variety of possible pathways is presented,
+    //with the program having to follow one depending on what the variable "word" is
+
+    //Sequence is also demonstrated below, as a set of instructions is presented
+    //which must be followed in order, in the format of if else statements
+    IF word is in dictionary THEN
+        IF word contains letters which aren't in "letters" THEN
+            RETURN false
+        ELSE
+            RETURN true
+        ENDIF
+    ELSE
+        RETURN false
+    END IF
+
+END
+
+
+//////////////////////////////////////////////////////////////////////////////////
+//Selects, scrambles, and checks the validity of nine-letter words for conundrum//
+//////////////////////////////////////////////////////////////////////////////////
+
+//The variable "nineLetterWords" exists, and is an array
+//containing 10 nine letter words for the conundrum game
+
+//The variable "guessedWord" exists, and is the word
+//guessed by the user for the conundrum game
+
+//The global variable originalWord exists, and is currently
+//empty
+
+FUNCTION scramble (nineLetterWords)
+BEGIN
+    //Modularisation is demonstrated in the use of this function, as it
+    //determines the value of the "anagram", and sends it back to the main
+    //"go" function to be used there
+
+    //Assignment is demonstrated below, as the variable "word" is assigned
+    //the value of a random word from the array called "nineLetterWords"
+    DECLARE word = random word from array "nineLetterWords"
+    DECLARE letter
+    DECLARE anagram
+    originalWord = word
+    
+    FOR i = 0 TO 8 STEP 1
+        letter = random letter from word
+        PUSH letter into anagram
+        SPLICE letter from word
+    ENDFOR
+
+    RETURN anagram
+
+END
+
+
+FUNCTION conundrumCheckWin (guessedWord)
+BEGIN
+    //Condition is demonstrated below through an if else statement, where if the
+    //guessed word equals the correct word then the function returns true, however
+    //if it is not equal it returns false
+    IF guessedWord === originalWord THEN
+        RETURN true
+    ELSE
+        RETURN false
+    ENDIF
+END

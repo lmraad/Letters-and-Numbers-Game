@@ -1,0 +1,318 @@
+/*
+STILL NEED TO DO:
+Fix bug with calculator (if able to) - if you backspace more than once it only gets rid of 1 digit
+                                     - you can't type numbers more than 1 digit on keyboard
+Make home page look nice for desktop
+'My solution' scroll thing
+*/
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: 'Corbel';
+}
+
+/*//////////////////////////////////////////////////////////
+//////////////////////// HEADER ////////////////////////////
+//////////////////////////////////////////////////////////*/
+
+#header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-top: 3.888889px;
+    padding-bottom: 5.8333334px;
+    width: 100%;
+    border-bottom: solid rgb(190, 190, 190) 0.777778px;
+}
+
+#title {
+    font-size: 27.222222px;
+    font-family: 'Corbel';
+    color: rgb(74, 111, 182);
+}
+
+#howToIcon {
+    font-size: 27.222222px;
+    font-family:'BIZ UDMincho Medium';
+    color:rgb(74, 111, 182);
+    margin-top: 3.888889px;
+    margin-left: 10px;
+}
+
+#homeIcon {
+    margin-top: 3.888889px;
+    margin-right: 10px;
+}
+
+/*//////////////////////////////////////////////////////////
+///////////////// TITLE AND SELECTION //////////////////////
+//////////////////////////////////////////////////////////*/
+
+#numbersTitle {
+    font-size: 58.333334px;
+    color:rgb(74, 111, 182);
+}
+
+#numbersBoxes {
+    display: flex;
+    justify-content: center;
+    margin-top: 11.6666667px;
+}
+
+.boxClass {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50.555556px;
+    height: 50.555556px;
+    border: solid rgb(190, 190, 190) 0.7777778px;
+    margin: 1.9444445px;
+}
+
+.highlightedBoxes {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 52.1111111px;
+    height: 42.777778px;
+    background-color: rgb(74, 111, 182);
+    border-top: solid rgb(111, 144, 202) 4.6666667px;
+    border-bottom: solid rgb(62, 99, 175) 4.6666667px;
+    margin: 1.9444445px;
+    color: #ffffff;
+    font-family: 'Bahnschrift SemiBold';
+    font-size: 31.111111px;
+}
+
+/*//////////////////////////////////////////////////////////
+///////////////// TARGET AND GO BUTTON /////////////////////
+//////////////////////////////////////////////////////////*/
+
+.pageText {
+    color: rgb(62, 99, 175);
+    font-size: 23.333333px;
+    width:max-content;
+}
+
+#middleSection {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: center;
+    min-width: 320px;
+    height: 194.444445px;
+    margin-top: 3.8888889px;
+    margin-left: 20px;
+}
+
+#targetBox {
+    width: 124.444444px;
+    height: 54.44444px;
+    border: solid rgb(190, 190, 190) 0.7777778px;
+    font-size: 35px;
+    text-align: center;
+    padding-top: 11.666667px;
+    color: rgb(62, 99, 175);
+    font-family: 'Bahnschrift SemiBold';
+}
+
+#goButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 143.888889px;
+    height: 143.888889px;
+    background-color: rgb(111, 144, 202);
+    border-radius: 116.666667px;
+    color: #ffffff;
+    font-size: 38.888889px;
+    margin-left: 30px;
+}
+
+/*//////////////////////////////////////////////////////////
+////////////// CALCULATOR AND CLOSEST ANSWER ///////////////
+//////////////////////////////////////////////////////////*/
+
+#calculator {
+    margin-left: 32px;
+    margin-top: 27.222222px;
+}
+
+#closestSection {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#closestText {
+    margin-top: 9px;
+    margin-left: 3.8888889px;
+}
+
+#closestBox {
+    width: 116.666667px;
+    height: 42.777778px;
+    border: solid rgb(190, 190, 190) 0.7777778px;
+    font-size: 31.111111px;
+    text-align: center;
+    color: rgb(62, 99, 175);
+    margin-left: 37px;
+    margin-bottom: 7.7777778px;
+    font-family: 'Bahnschrift SemiBold';
+    padding-top: 7.777778px;
+}
+
+#equation {
+    width: calc(63.777778px * 5 - 25.2777778px);
+    border: solid rgb(190, 190, 190) 0.7777778px;
+    font-size: 31.111111px;
+    margin-bottom: 7.777778px;
+    margin-left: 3.888889px;
+    color: rgb(62, 99, 175);
+    font-family: 'Bahnschrift SemiBold';
+    padding-left: 7.777778px;
+    padding-top: 5.833334px;
+    padding-bottom: 5.833334px;
+}
+
+#keypad {
+    width: 340px;
+}
+
+.keyClass {
+    font-size: 27.222222px;
+    min-width: 54.444445px;
+    min-height: 54.444445px;
+    margin: 3.888889px;
+    border: none;
+    background-color: rgb(111, 144, 202);
+    color: #ffffff;
+    border-radius: 7.777778px;
+}
+
+.empty {
+    height: 0px;
+    min-width: 54.444445px;
+    margin: 3.888889px;
+    visibility: hidden;
+}
+
+.played {
+    height: 0px;
+    min-width: 54.444445px;
+    margin: 3.8888889px;
+    visibility: hidden;
+}
+
+.equals {
+    width: 116.666667px;
+}
+
+/*//////////////////////////////////////////////////////////
+/////////////////////// INVISIBLE //////////////////////////
+//////////////////////////////////////////////////////////*/
+
+.invisible {
+    visibility: hidden;
+    height: 0px !important;
+    width: 0px !important;
+    margin: 0px !important;
+    padding: 0px !important;
+}
+
+/*//////////////////////////////////////////////////////////
+////////////////////// RESULTS PAGE ////////////////////////
+//////////////////////////////////////////////////////////*/
+
+#resultsBox {
+    min-width: 311.111111px;
+    border: solid rgb(190, 190, 190) 0.7777778px;
+    padding: 11.666667px;
+    margin-top: 19.4444445px;
+    margin-bottom: 30px;
+}
+
+#timeUpText {
+    font-size: 35px;
+    color: rgb(62, 99, 175);
+    margin-bottom: 7.777778px;
+}
+
+.resultsPageText {
+    font-size: 23.33333px;
+    color: rgb(62, 99, 175);
+    margin-bottom: 3.888889px;
+}
+
+#resultsPageTarget {
+    display: flex;
+    flex-wrap: wrap;
+    width: 326.666667px;
+    margin-top: 20px;
+}
+
+#resultsTargetText {
+    margin-right: 19.444445px;
+    color: rgb(62, 99, 175);
+    font-size: 35px;
+    margin-top: 10px;
+}
+
+#resultsTargetBox {
+    border: solid rgb(190, 190, 190) 0.7777778px;
+    min-width: 124.444444px;
+    min-height: 54.44444px;
+    font-size: 35px;
+    text-align: center;
+    padding-top: 11.666667px;
+    color: rgb(62, 99, 175);
+    font-family: 'Bahnschrift SemiBold';
+    margin-left: 78.13px;
+}
+
+#sharingInstructions {
+    margin-left: 19.444445px;
+    margin-right: 19.444445px;
+    margin-top: 205px;
+    color: rgb(62, 99, 175);
+    font-size: 23.33333px;
+}
+
+#bottomSection {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    margin-top: 30px;
+}
+
+#mySolutionText {
+    font-size: 23.33333px;
+    color: rgb(62, 99, 175);
+    margin-bottom: 3.888889px;
+}
+
+#continue {
+    font-size: 27.222222px;
+    width: 150px;
+    height: 50px;
+    margin-left: 50px;
+    text-align: center;
+    padding-top: 10px;
+    background-color: rgb(111, 144, 202);
+    color: #ffffff;
+}
+
+/*//////////////////////////////////////////////////////////
+////////////////////// THE SOLUTION ////////////////////////
+//////////////////////////////////////////////////////////*/
+
+#solutionBox {
+    width: 311.111111px;
+    border: solid rgb(190, 190, 190) 0.7777778px;
+    padding: 11.666667px;
+    margin-top: 50px;
+    font-size: 27.222222px;
+    color: rgb(62, 99, 175);
+    line-height: 1.6;
+}

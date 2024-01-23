@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Letters and Numbers</title>
+    <link href="../public/conundrum.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body onload="build()">
+
+    <div id="header">
+        <a style="text-decoration: none;" href="howto.html"><div id="howToIcon"><b>?</b></div></a>
+        <div id="title"><b>LETTERS & NUMBERS</b></div>
+        <a style="text-decoration: none;" href="index.html"><div id="homeIcon">
+            <img src="../public/images/homeIcon1.png" alt="Home" width="23.33333">
+        </div></a>
+    </div>
+
+    <div id="conundrumTitle"><b>CONUNDRUM</b></div>
+
+    <div id="resultsBox" class="invisible">
+        <div id="timeUpText"></div>
+        <div id="gotTheWordText" class="resultsPageText"></div>
+    </div>
+    
+    <div id="lettersBoxes"></div>
+
+    <div id="middleSection">
+        <div id="goButton">GO</div>
+    </div>
+
+    <div id="sharingInstructions" class="invisible">
+        Share this puzzle and your results now - then it'll be gone forever!
+    </div>
+
+    <div id="keyboardAndInput">
+        <input id="input">
+        <div id="keypad"></div>
+    </div>
+
+    <div id="bottomSection" class="invisible">
+        <div id="mySolutionText" class="invisible">My Solution ↓</div>
+        <a id="continueLink" style="text-decoration: none;" href="index.html" class="invisible">
+            <div id="continue" class="invisible">Continue</div>
+        </a>
+    </div>
+
+    <div id="solutionBox" class="invisible"></div>
+
+</body>
+
+<script>
+
+    ////////////////////////////////////////////////////////////
+    ///////////////// ESTABLISHING VARIABLES ///////////////////
+    ////////////////////////////////////////////////////////////
+
+    document.getElementById("lettersBoxes")
+    let keys = ["#", "#", "#", "CA",
+                "#", "#", "#", "<",
+                "#", "#", "#", "⟲",
+                "ENTER"]
+    let nineLetterWords = ["ABILITIES", "TEXTBOOKS", "RECOGNISE", "TECHNIQUE", "PARALYSED"]
+
+    let begun = false
+
+    let correctWord
+    let scrambledWord
+    let lastCharacter
+    let vowels = 3
+    
+    let longestLength = 0
+
+    let time = 29
+    let timeScore
+    let buttonTimer
+
+    ////////////////////////////////////////////////////////////
+    /////////////////////// BUILDING ///////////////////////////
+    ////////////////////////////////////////////////////////////
+
+    function build() {
+        document.getElementById("goButton").addEventListener("click", go) 
+
+        //This builds the letter boxes
+        for (let i = 0; i < 9; i++) {
+            let box = document.createElement('div')
+            box.id = "box" + i
+            box.className = "boxClass"
+            box.addEventListener("click", () => { highlight(i) })
+            lettersBoxes.appendChild(box)
+        }
+
+        //This builds the letter keys
+        document.getElementById("keypad")
+        for (let i = 0; i < keys.length; i++) {
+            let key = document.createElement('button')
+            key.id = "key" + i
+            key.innerHTML = keys[i]
+            key.className = "keyClass played"
+            //key.className = "keyClass"
+            key.addEventListener("click", () => { inputCharacter(keys[i]) })
+            keypad.appendChild(key)
+        }
+    }
+
+    function inputCharacter(letter) {
+
+        letterLegal = false
+
+        //If letter = the innerHTML of a highlighted key, then letterLegal = true
+        for (let i=0; i<keys.length; i++) {
+            if (letter === (keys[i])) {
+                if (!document.getElementById("key" + i).classList.contains("played")) {
+                    letterLegal = true
+                }
+            }
+        }
+
+        //Entering the letter
+        if (begun === true) {
+            document.getElementById('input')
+            
+            //if letter is CLEAR
+            if (letter === "CA") {
+                input.value = ""
+
+                for (let i=0; i<12; i++) {
+                    let key = document.getElementById("key" + i)
+                    key.className = "keyClass"
+                }
+            
+            //if letter is BACKSPACE
+            } else if (letter === "<" || letter === "BACKSPACE") {
+
+                lastCharacter = input.value[input.value.length - 1]
+                input.value = input.value.substring(0, input.value.length - 1)
+
+                for (let i=0; i<12; i++) {
+                    let key = document.getElementById("key" + i)
+
+                    if (key.innerHTML === lastCharacter) {
+                        //If key.classlist contains "played"
+                        if (key.classList.contains("played")) {
+                            key.className = "keyClass"
+                            return
+                        }
+                    }
+                }
+
+            //if letter is ENTER
+            } else if (letter === "ENTER") {
+
+                if (input.value === correctWord) {
+                    resultsPage()
+                }
+
+                input.value = ""
+
+                for (let i=0; i<12; i++) {
+                    let key = document.getElementById("key" + i)
+                    key.className = "keyClass"
+                }
+
+            //if letter is SCRAMBLE
+            } else if (letter === "⟲" || letter === "ARROWRIGHT") {
+                scramble()
+
+            } else if (letterLegal === true) {
+                input.value += letter
+                lastCharacter = letter
+
+                for (let i=0; i<12; i++) {
+                    let key = document.getElementById("key" + i)
+
+                    if (key.innerHTML === lastCharacter) {
+                        //If key.classlist DOES NOT contain "played"
+                        if (!key.classList.contains("played")) {
+                            key.className = "played"
+                            return
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    ////////////////////////////////////////////////////////////
+    /////////////////// BEGINNING THE GAME /////////////////////
+    ////////////////////////////////////////////////////////////
+
+    function go() {
+        begun = true
+
+        //Allows keyboard input
+        document.addEventListener('keydown', () => { inputCharacter(event.key.toUpperCase()) })
+        
+        //Starts timer
+        buttonTimer = setInterval(timer, 1000)
+
+        //Makes sure you can't press goButton twice
+        document.getElementById("goButton").removeEventListener("click", go)
+
+        //Chooses the word
+        let correctWordNumber = Math.floor(Math.random() * nineLetterWords.length)
+        correctWord = nineLetterWords[correctWordNumber]
+        scrambledWord = correctWord.split("")
+        scramble()
+
+        //Makes the keys visible
+        for (let i=0; i<13; i++) {
+            let key = document.getElementById("key" + i)
+            key.className = "keyClass"
+        }   
+    }
+
+    function inputLetters(chosenLetters) {
+
+        //Inputs the chosen letters in the boxes
+        for (let i=0; i<9; i++) {
+            let box = document.getElementById("box" + i)
+            box.className = "highlightedBoxes"
+            box.innerHTML = chosenLetters[i]
+        }
+
+        //Inputs the chosen letters in the keyboard
+        for (let i=0; i<12; i++) {
+            document.getElementById("key" + i)
+        }
+
+        key0.innerHTML = chosenLetters[0]
+        key1.innerHTML = chosenLetters[1]
+        key2.innerHTML = chosenLetters[2]
+        key4.innerHTML = chosenLetters[3]
+        key5.innerHTML = chosenLetters[4]
+        key6.innerHTML = chosenLetters[5]
+        key8.innerHTML = chosenLetters[6]
+        key9.innerHTML = chosenLetters[7]
+        key10.innerHTML = chosenLetters[8]
+
+        //Inputs the chosen letters in the 'keys' array instead of hashtags
+        document.getElementById("keys")
+        keys[0] = chosenLetters[0]
+        keys[1] = chosenLetters[1]
+        keys[2] = chosenLetters[2]
+        keys[4] = chosenLetters[3]
+        keys[5] = chosenLetters[4]
+        keys[6] = chosenLetters[5]
+        keys[8] = chosenLetters[6]
+        keys[9] = chosenLetters[7]
+        keys[10] = chosenLetters[8]
+
+    }
+
+    function scramble() {
+        //Makes the input box empty and all keys visible again
+        document.getElementById('input').value = ""
+        for (let i=0; i<12; i++) {
+            let key = document.getElementById("key" + i)
+            key.className = "keyClass"
+        }
+
+        let scrambleLetters = []
+
+        //pushes all values in scrambledWord into scrambleLetters
+        for (i=0; i<9; i++) {
+            scrambleLetters.push(scrambledWord[i])
+            scrambledWord[i] = ""
+        }
+
+        //replaces all values of scrambledWord with random values from scrambleLetters
+        for (i=0; i<9; i++) {
+            let randomLetter = Math.floor(Math.random() * scrambleLetters.length)
+            scrambledWord[i] = scrambleLetters[randomLetter]
+            scrambleLetters.splice(randomLetter, 1)
+        }
+
+        //Inputs the scrambled letters in the boxes and keyboard
+        inputLetters(scrambledWord)
+    }
+
+    function timer() {
+        document.getElementById("goButton").innerHTML = time
+        time--
+
+        if (time === -2) {
+            resultsPage()
+        }
+    }
+
+    ////////////////////////////////////////////////////////////
+    ////////////////////// RESULTS PAGE ////////////////////////
+    ////////////////////////////////////////////////////////////
+
+    function resultsPage() {
+        timeScore = 29-time
+        clearInterval(buttonTimer)
+
+        //Makes elements on the first page invisible
+        document.getElementById("middleSection").className = "invisible"
+        document.getElementById("goButton").className = "invisible"
+        document.getElementById("keyboardAndInput").className = "invisible"
+        document.getElementById("input").className = "invisible"
+        document.getElementById("keypad").className = "invisible"
+
+        //Makes elements on the results page visible
+        document.getElementById("resultsBox").classList.remove("invisible")
+        document.getElementById("sharingInstructions").classList.remove("invisible")
+        document.getElementById("bottomSection").classList.remove("invisible")
+        document.getElementById("solutionBox").classList.remove("invisible")
+        document.getElementById("mySolutionText").classList.remove("invisible")
+        document.getElementById("continueLink").classList.remove("invisible")
+        document.getElementById("continue").classList.remove("invisible")
+
+        //Fills in gotTheWordText
+        if (timeScore === 32 || timeScore === 31) {
+            document.getElementById("timeUpText").innerHTML = "<b>Time's Up!</b>"
+            document.getElementById("gotTheWordText").innerHTML = "You didn't get the word :("
+        } else {
+            document.getElementById("timeUpText").innerHTML = "<b>Well done!</b>"
+            document.getElementById("gotTheWordText").innerHTML = "You got the word in " +timeScore+ " seconds."
+        }
+    
+        //Finds and fills in the correct answer
+        document.getElementById("solutionBox").innerHTML = "Correct word:</br>" +correctWord
+    }
+
+</script>
+
+</html>

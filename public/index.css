@@ -1,0 +1,95 @@
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: 'Corbel';
+    
+    background-image: url("../public/images/background3.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+#title {
+    display: flex;
+    justify-content: center;
+    /*font-size: 30px;*/
+    font-size: 35px;
+    font-family: 'Corbel';
+    /*margin-top: -5px;*/
+    margin-top: 252.7778px;
+    color: rgb(255, 255, 255);
+    background-color:rgb(36, 91, 134);
+    border-radius: 7px;
+    width: 97%;
+    height: 40px;
+    /*margin-bottom: 220px;*/
+    /*lighter blue: rgb(59, 135, 196)*/
+    /*darker blue: rgb(36, 91, 134);*/
+}
+
+#homeBoxes {
+    display: flex;
+    justify-content: center;
+    width: 350px;
+    flex-wrap: wrap;
+}
+
+.buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 116.66667px;
+    height: 105px;
+    background-color: rgb(74, 111, 182);
+    border-top: solid rgb(111, 144, 202) 5.8333334px;
+    border-bottom: solid rgb(62, 99, 175) 5.8333334px;
+    margin-top: 31.111111px;
+    margin-left: 15.55555556px;
+    margin-right: 15.55555556px;
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.gameButtons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(74, 111, 182);
+    border-top: solid rgb(111, 144, 202) 5.8333334px;
+    border-bottom: solid rgb(62, 99, 175) 5.8333334px;
+    width: 264.444445px;
+    height: 77.777778px;
+    font-size: 31.111111px;
+    margin-bottom: 15.5555556px;
+    color: #ffffff;
+}
+
+#howToButton {
+    font-size: 77.777778px;
+    font-family:'BIZ UDMincho Medium';
+}
+
+#howToButtonText {
+    display: flex;
+    justify-content: center;
+    font-size: 23.333333px;
+    margin-top: 3.8888889px;
+    margin-bottom: 15.555556px;
+    margin-left: 16px;
+    color: rgb(255, 255, 255);
+    background-color:rgb(36, 91, 134);
+    border-radius: 7px;
+    width: 116.66667px;
+}
+
+#userStatsButtonText {
+    display: flex;
+    justify-content: center;
+    font-size: 23.333333px;
+    margin-top: 3.888889px;
+    margin-left: 15px;
+    color: rgb(255, 255, 255);
+    background-color:rgb(36, 91, 134);
+    border-radius: 7px;
+    width: 116.66667px;
+}

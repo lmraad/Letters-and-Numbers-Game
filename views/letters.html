@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Letters and Numbers</title>
+    <link href="../public/letters.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="../views/dictionary.js"></script>
+</head>
+
+<body onload="build()">
+
+    <div id="header">
+        <a style="text-decoration: none;" href="howto.html"><div id="howToIcon"><b>?</b></div></a>
+        <div id="title"><b>LETTERS & NUMBERS</b></div>
+        <a style="text-decoration: none;" href="index.html"><div id="homeIcon">
+            <img src="../public/images/homeIcon1.png" alt="Home" width="23.33333">
+        </div></a>
+    </div>
+
+    <div id="lettersTitle"><b>LETTERS</b></div>
+
+    <div id="resultsBox" class="invisible">
+        <div id="timeUpText"><b>Time's Up!</b></div>
+        <div id="yourLongestWord" class="resultsPageText"></div>
+    </div>
+    
+    <div id="lettersBoxes"></div>
+    <div id="selectionInstructions" class="pageText">Select vowels</div>
+
+    <div id="middleSection">
+        <div id="goButton">GO</div>
+    </div>
+
+    <div id="sharingInstructions" class="invisible">
+        Share this puzzle and your results now - then it'll be gone forever!
+    </div>
+
+    <div id="keyboardAndInput">
+        <div id="longestWordSection">
+            <div id="longestWordText" class="pageText">Longest word:</div>
+            <div id="longestWordBox"></div>
+        </div>
+        <input id="input">
+        <div id="keypad"></div>
+    </div>
+
+    <div id="bottomSection" class="invisible">
+        <div id="mySolutionText" class="invisible">My Solution ↓</div>
+        <a id="continueLink" style="text-decoration: none;" href="index.html" class="invisible">
+            <div id="continue" class="invisible">Continue</div>
+        </a>
+    </div>
+
+    <div id="solutionBox" class="invisible"></div>
+
+</body>
+
+<script>
+
+    ////////////////////////////////////////////////////////////
+    ///////////////// ESTABLISHING VARIABLES ///////////////////
+    ////////////////////////////////////////////////////////////
+
+    document.getElementById("lettersBoxes")
+    let keys = ["#", "#", "#", "CA",
+                "#", "#", "#", "<",
+                "#", "#", "#", "⟲",
+                "ENTER"]
+
+    let begun = false
+
+    let chosenLetters = []
+    let lastCharacter
+    let vowels = 3
+    
+    let longestLength = 0
+
+    let time = 9
+    let buttonTimer
+
+    ////////////////////////////////////////////////////////////
+    /////////////////////// BUILDING ///////////////////////////
+    ////////////////////////////////////////////////////////////
+
+    function build() {
+        document.getElementById("goButton").addEventListener("click", go) 
+
+        //This builds the letter boxes
+        for (let i = 0; i < 9; i++) {
+            let box = document.createElement('div')
+            box.id = "box" + i
+            if (i < 3) {
+                box.className = "highlightedBoxes"
+            } else {
+                box.className = "boxClass"
+            }
+            box.addEventListener("click", () => { highlight(i) })
+            lettersBoxes.appendChild(box)
+        }
+
+        //This builds the letter keys
+        document.getElementById("keypad")
+        for (let i = 0; i < keys.length; i++) {
+            let key = document.createElement('button')
+            key.id = "key" + i
+            key.innerHTML = keys[i]
+            key.className = "keyClass played"
+            //key.className = "keyClass"
+            key.addEventListener("click", () => { inputCharacter(keys[i]) })
+            keypad.appendChild(key)
+        }
+    }
+
+    function inputCharacter(letter) {
+
+        //So far, the typed letter is "not legal"
+        letterLegal = false
+
+        //If letter equals the innerHTML of a highlighted key, then letterLegal = true
+        for (let i=0; i<keys.length; i++) {
+            if (letter === (keys[i])) {
+                if (document.getElementById("key" + i).classList.contains("played")) {
+                    return
+                } else {
+                    letterLegal = true
+                }
+            }
+        }
+
+        //Entering the letter (can't be done until the "go" button has been pressed)
+        if (begun === true) {
+            //The input box
+            document.getElementById('input')
+            
+            //if letter is CLEAR
+            if (letter === "CA") {
+                input.value = ""
+
+                //makes all keys highlighted and "legal" again
+                for (let i=0; i<12; i++) {
+                    let key = document.getElementById("key" + i)
+                    key.className = "keyClass"
+                }
+            
+            //if letter is BACKSPACE
+            } else if (letter === "<" || letter === "BACKSPACE") {
+
+                lastCharacter = input.value[input.value.length - 1]
+                input.value = input.value.substring(0, input.value.length - 1)
+
+                //makes the backspaced character key highlighted again
+                for (let i=0; i<12; i++) {
+                    let key = document.getElementById("key" + i)
+
+                    if (key.innerHTML === lastCharacter) {
+                        key.className = "keyClass"
+                    }
+                }
+
+            //if letter is ENTER
+            } else if (letter === "ENTER") {
+                document.getElementById("longestWordBox")
+                longestWordBox.innerHTML = longestWord(input.value)
+                input.value = ""
+
+                //makes all keys highlighted and "legal" again
+                for (let i=0; i<12; i++) {
+                    let key = document.getElementById("key" + i)
+                    key.className = "keyClass"
+                }
+
+            //if letter is SCRAMBLE
+            } else if (letter === "⟲" || letter === "ARROWRIGHT") {
+                scramble()
+
+            } else if (letterLegal === true) {
+                input.value += letter
+                //lastCharacter is to remember the last legal number/symbol typed, as "letter" will be replaced
+                lastCharacter = letter
+
+                //makes the typed character key invisible
+                for (let i=0; i<12; i++) {
+                    let key = document.getElementById("key" + i)
+
+                    if (key.innerHTML === lastCharacter) {
+                        key.className = "played"
+                    }
+                }
+            }
+        }
+    }
+
+    ////////////////////////////////////////////////////////////
+    ///////////////// HIGHLIGHTING THE BOXES ///////////////////
+    ////////////////////////////////////////////////////////////
+
+    function highlight(number) {
+
+        if (document.getElementById("box8").classList.contains("highlightedBoxes")){
+            return
+        }
+
+        for (let i=0; i<9; i++) {
+            document.getElementById("box" + i)
+        }
+
+        //Changes the box classes based on which one is selected
+        for (let j=2; j<5; j++) {
+            if (number === j) {
+                //To record the number of vowels selected
+                vowels = number + 1
+
+                for (let i=2; i<=j; i++) {
+                    let box = document.getElementById("box" + i)
+                    box.className = "highlightedBoxes"
+                }
+                for (let i = j+1; i<5; i++) {
+                    let box = document.getElementById("box" + i)
+                    box.className = "boxClass"
+                }
+            }
+        }
+    }
+
+    ////////////////////////////////////////////////////////////
+    /////////////////// BEGINNING THE GAME /////////////////////
+    ////////////////////////////////////////////////////////////
+
+    function go() {
+        begun = true
+
+        //Allows keyboard input
+        document.addEventListener('keydown', () => { inputCharacter(event.key.toUpperCase()) })
+        
+        //Starts timer
+        buttonTimer = setInterval(timer, 1000)
+
+        //Fills in longest word box
+        document.getElementById("longestWordBox").innerHTML = ""
+
+        //Makes sure you can't press goButton twice
+        document.getElementById("goButton").removeEventListener("click", go)
+
+        //Generates the chosen letters (vowels then consonants)
+        let vowelsArray = ["A", "E", "I", "O", "U"]
+        let consonantsArray = ["B", "C", "D", "F", "G", "H", "J", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "V", "W", "X", "Y", "Z"]
+        let random = 0
+        let consonants = 9 - vowels
+
+        for (let i=0; i < vowels; i++) {
+            random = Math.floor(Math.random() * vowelsArray.length)
+            chosenLetters.push(vowelsArray[random])
+            vowelsArray.splice(random, 1)
+        }
+
+        for (let i=0; i < consonants; i++) {
+            random = Math.floor(Math.random() * consonantsArray.length)
+            chosenLetters.push(consonantsArray[random])
+            consonantsArray.splice(random, 1)
+        }
+        
+        //Inputs the chosen letters in the boxes and keyboard
+        inputLetters(chosenLetters)
+
+        //Makes the keys visible
+        for (let i=0; i<13; i++) {
+            let key = document.getElementById("key" + i)
+            key.className = "keyClass"
+        }   
+    }
+
+    function inputLetters(chosenLetters) {
+
+        //Inputs the chosen letters in the boxes
+        for (let i=0; i<9; i++) {
+            let box = document.getElementById("box" + i)
+            box.className = "highlightedBoxes"
+            box.innerHTML = chosenLetters[i]
+        }
+
+        //Inputs the chosen letters in the keyboard
+        for (let i=0; i<12; i++) {
+            document.getElementById("key" + i)
+        }
+
+        key0.innerHTML = chosenLetters[0]
+        key1.innerHTML = chosenLetters[1]
+        key2.innerHTML = chosenLetters[2]
+        key4.innerHTML = chosenLetters[3]
+        key5.innerHTML = chosenLetters[4]
+        key6.innerHTML = chosenLetters[5]
+        key8.innerHTML = chosenLetters[6]
+        key9.innerHTML = chosenLetters[7]
+        key10.innerHTML = chosenLetters[8]
+
+        //Inputs the chosen letters in the 'keys' array instead of hashtags
+        document.getElementById("keys")
+        keys[0] = chosenLetters[0]
+        keys[1] = chosenLetters[1]
+        keys[2] = chosenLetters[2]
+        keys[4] = chosenLetters[3]
+        keys[5] = chosenLetters[4]
+        keys[6] = chosenLetters[5]
+        keys[8] = chosenLetters[6]
+        keys[9] = chosenLetters[7]
+        keys[10] = chosenLetters[8]
+
+    }
+
+    function longestWord(word) {
+
+        word = word.toLowerCase()
+
+        if (dictionary.indexOf(word) !== -1) {
+            let wordString = JSON.stringify(word)
+            let length = wordString.length
+
+            if (length > longestLength) {
+                longestLength = length
+                word = word.toUpperCase()
+                return word
+            } else {
+                document.getElementById("longestWordBox")
+                return longestWordBox.innerHTML
+            }
+        } else {
+            document.getElementById("longestWordBox")
+            return longestWordBox.innerHTML
+        }
+
+    }
+
+    function scramble() {
+        document.getElementById('input').value = ""
+
+        for (let i=0; i<12; i++) {
+            let key = document.getElementById("key" + i)
+            key.className = "keyClass"
+        }
+
+        let scrambleLetters = []
+
+        for (i=0; i<9; i++) {
+            scrambleLetters.push(chosenLetters[i])
+            chosenLetters[i] = ""
+        }
+
+        for (i=0; i<9; i++) {
+            let randomLetter = Math.floor(Math.random() * scrambleLetters.length)
+            chosenLetters[i] = scrambleLetters[randomLetter]
+            scrambleLetters.splice(randomLetter, 1)
+        }
+
+        inputLetters(chosenLetters)
+    }
+
+    function timer() {
+        document.getElementById("goButton").innerHTML = time
+        time--
+
+        if (time === -2) {
+            resultsPage()
+        }
+    }
+
+    ////////////////////////////////////////////////////////////
+    ////////////////////// RESULTS PAGE ////////////////////////
+    ////////////////////////////////////////////////////////////
+
+    function resultsPage() {
+        clearInterval(buttonTimer)
+
+        //Makes elements on the first page invisible
+        document.getElementById("selectionInstructions").className = "invisible"
+
+        document.getElementById("middleSection").className = "invisible"
+        document.getElementById("goButton").className = "invisible"
+
+        document.getElementById("keyboardAndInput").className = "invisible"
+        document.getElementById("longestWordSection").className = "invisible"
+        document.getElementById("longestWordText").className = "invisible"
+        document.getElementById("longestWordBox").className = "invisible"
+        document.getElementById("input").className = "invisible"
+        document.getElementById("keypad").className = "invisible"
+
+        //Makes elements on the results page visible
+        document.getElementById("resultsBox").classList.remove("invisible")
+        document.getElementById("sharingInstructions").classList.remove("invisible")
+        document.getElementById("bottomSection").classList.remove("invisible")
+        document.getElementById("solutionBox").classList.remove("invisible")
+        document.getElementById("mySolutionText").classList.remove("invisible")
+        document.getElementById("continueLink").classList.remove("invisible")
+        document.getElementById("continue").classList.remove("invisible")
+
+        //Fills in longest word
+        document.getElementById("yourLongestWord").innerHTML = "Your longest word: " +document.getElementById("longestWordBox").innerHTML
+    
+        //Finds and fills in the calculated 'correct' answer
+        let result = find(chosenLetters)
+        document.getElementById("solutionBox").innerHTML = "My longest word:</br>" +result
+    }
+
+    function find(letters) {
+        let correctLetters = 0
+        let actualLongestWord = ""
+        let legalLetters = []
+
+        //Puts everything in "letters" to lower case
+        for (let i=0; i<letters.length; i++) {
+            letters[i] = letters[i].toLowerCase()
+        }
+
+        for (let i=0; i<dictionary.length; i++) {
+
+            //Resets legalLetters
+            legalLetters = []
+            legalLetters.push(letters[0], letters[1], letters[2], letters[3], letters[4], letters[5], letters[6], letters[7], letters[8])
+
+            let word = dictionary[i]
+            for (let j=0; j<word.length; j++) {
+                let legalLettersNumber = legalLetters.indexOf(word[j])
+                if (legalLettersNumber !== -1) {
+                    correctLetters = correctLetters + 1
+                    legalLetters.splice(legalLettersNumber, 1)
+                }
+            }
+
+            if (correctLetters === word.length) {
+                if (word.length > actualLongestWord.length) {
+                    actualLongestWord = word
+                }
+            }
+            
+            correctLetters = 0
+
+        }
+
+        actualLongestWord = actualLongestWord.toUpperCase()
+        return actualLongestWord
+    }
+
+</script>
+
+</html>

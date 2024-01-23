@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Letters and Numbers</title>
+    <link href="../public/numbers.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body onload="build()">
+
+    <div id="header">
+        <a style="text-decoration: none;" href="howto.html"><div id="howToIcon"><b>?</b></div></a>
+        <div id="title"><b>LETTERS & NUMBERS</b></div>
+        <a style="text-decoration: none;" href="index.html"><div id="homeIcon">
+            <img src="../public/images/homeIcon1.png" alt="Home" width="23.33333">
+        </div></a>
+    </div>
+
+    <div id="numbersTitle"><b>NUMBERS</b></div>
+
+    <div id="resultsBox" class="invisible">
+        <div id="timeUpText"><b>Time's Up!</b></div>
+        <div id="youGot" class="resultsPageText"></div>
+        <div id="after" class="resultsPageText"></div>
+    </div>
+    
+    <div id="numbersBoxes"></div>
+    <div id="selectionInstructions" class="pageText">Select large numbers</div>
+
+    <div id="resultsPageTarget" class="invisible">
+        <div id="resultsTargetText">Target:</div>
+        <div id="resultsTargetBox" class="invisible"></div>
+    </div>
+
+    <div id="middleSection">
+        <div id="targetBox"></div>
+        <div id="targetText" class="pageText">Target</div>
+        <div id="goButton">GO</div>
+    </div>
+
+    <div id="sharingInstructions" class="invisible">
+        Share this puzzle and your results now - then it'll be gone forever!
+    </div>
+
+    <div id="calculator">
+        <div id="closestSection">
+            <div id="closestText" class="pageText">Closest answer:</div>
+            <div id="closestBox"></div>
+        </div>
+        <input id="equation">
+        <div id="keypad"></div>
+    </div>
+
+    <div id="bottomSection" class="invisible">
+        <div id="mySolutionText" class="invisible">My Solution ↓</div>
+        <a id="continueLink" style="text-decoration: none;" href="index.html" class="invisible">
+            <div id="continue" class="invisible">Continue</div>
+        </a>
+    </div>
+
+    <div id="solutionBox" class="invisible"></div>
+
+</body>
+
+<script>
+
+    ////////////////////////////////////////////////////////////
+    ///////////////// ESTABLISHING VARIABLES ///////////////////
+    ////////////////////////////////////////////////////////////
+
+    document.getElementById("numbersBoxes")
+    let keys = ["#", "#", "(", ")", "C",
+                "#", "#", "×", "÷", "<",
+                "#", "#", "+", "-", "",
+                "", "", "="]
+
+    let largeNumbers = 1
+    let begun = false
+    let equals = false
+    let number = false
+    let letterLegal = false
+
+    let chosenNumbers = []
+    let lastCharacter
+    let target
+
+    let closestDistance = 1000
+    let time = 29
+    let timeScore = 0
+    let buttonTimer
+
+    let _distance, _closest, _found, _counter=0, _target;
+
+    ////////////////////////////////////////////////////////////
+    /////////////////////// BUILDING ///////////////////////////
+    ////////////////////////////////////////////////////////////
+
+    function build() {
+        document.getElementById("goButton").addEventListener("click", go) 
+
+        //This builds the number boxes
+        for (let i = 0; i < 6; i++) {
+            let box = document.createElement('div')
+            box.id = "box" + i
+            if (i === 0) {
+                box.className = "highlightedBoxes"
+            } else {
+                box.className = "boxClass"
+            }
+            box.addEventListener("click", () => { highlight(i) })
+            numbersBoxes.appendChild(box)
+        }
+
+        //This builds the calculator keypad
+        document.getElementById("keypad")
+        for (let i = 0; i < keys.length; i++) {
+            let key = document.createElement('button')
+            key.id = "key" + i
+            key.innerHTML = keys[i]
+            if (keys[i] === "") {
+                key.className = "empty"
+            } else if (keys[i] === "=") {
+                key.className = "keyClass equals empty"
+            } else {
+                key.className = "keyClass empty"
+            }
+            key.addEventListener("click", () => { inputCharacter(keys[i]) })
+            keypad.appendChild(key)
+        }
+    }
+
+    function inputCharacter(letter) {
+
+        if (begun === true) {
+            document.getElementById('equation')
+            let numberKeys = [key0, key1, key5, key6, key10, key11]
+            let symbolKeys = [key7, key8, key12, key13]
+            letterLegal = false
+
+            if (letter === "*" || letter === "X") {
+                letter = "×"
+            } else if (letter === "/") {
+                letter = "÷"
+            }
+
+            //If letter = the innerHTML of a highlighted key, then letterLegal = true
+            for (let i=0; i<keys.length; i++) {
+                if (letter === (keys[i]+"") || letter === (keys[i])) {
+                    if (document.getElementById("key" + i).classList.contains("empty") || document.getElementById("key" + i).classList.contains("played")) {
+                        return
+                    } else {
+                        letterLegal = true
+                    }
+                }
+            }
+
+            ////////////////////////////////////////////////////////////
+            ////////////////// ENTERING THE LETTER /////////////////////
+            ////////////////////////////////////////////////////////////
+            
+            //if letter is CLEAR
+            if (letter === "C") {
+                equation.value = ""
+            
+            //if letter is BACKSPACE
+            } else if (letter === "<" || letter === "BACKSPACE") {
+
+                //if last character was number, account for multiple digits and make key visible again
+                for (let i=0; i<numberKeys.length; i++) {
+                    if (parseInt(lastCharacter) === parseInt(numberKeys[i].innerHTML)) {
+
+                        let characterString = '"' +lastCharacter+ '"'
+                        equation.value = equation.value.substring(0, equation.value.length - characterString.length +2)    //The +2 is to exclude quotation marks
+                        number = true
+
+                        if (parseInt(key0.innerHTML) === parseInt(lastCharacter)) {
+                            key0.className = "keyClass"
+                        } else if (parseInt(key1.innerHTML) === parseInt(lastCharacter)) {
+                            key1.className = "keyClass"
+                        } else if (parseInt(key5.innerHTML) === parseInt(lastCharacter)) {
+                            key5.className = "keyClass"
+                        } else if (parseInt(key6.innerHTML) === parseInt(lastCharacter)) {
+                            key6.className = "keyClass"
+                        } else if (parseInt(key10.innerHTML) === parseInt(lastCharacter)) {
+                            key10.className = "keyClass"
+                        } else if (parseInt(key11.innerHTML) === parseInt(lastCharacter)) {
+                            key11.className = "keyClass"
+                        }
+
+                    }
+                }
+
+                //if last character wasn't a number
+                if (number === false) {
+                    equation.value = equation.value.substring(0, equation.value.length - 1)
+                }
+
+                number = false
+                lastCharacter = equation.value[equation.value.length - 1]
+
+            //if letter is EQUALS
+            } else if (letter === "=" || letter === "ENTER") {
+                equation.value = eval(equation.value.replaceAll("×", "*").replaceAll("÷", "/"))
+
+                document.getElementById("closestBox")
+                closestBox.innerHTML = closestAnswer(equation.value)
+
+                equals = true
+
+            } else if (letterLegal === true ) {
+                equation.value += letter
+                lastCharacter = letter
+
+                //if letter is a number, letter className is played
+                for (let i=0; i<numberKeys.length; i++) {
+                    if (parseInt(letter) === parseInt(numberKeys[i].innerHTML)) {
+
+                        if (parseInt(key0.innerHTML) === parseInt(letter)) {
+                            key0.className = "played"
+                        } else if (parseInt(key1.innerHTML) === parseInt(letter)) {
+                            key1.className = "played"
+                        } else if (parseInt(key5.innerHTML) === parseInt(letter)) {
+                            key5.className = "played"
+                        } else if (parseInt(key6.innerHTML) === parseInt(letter)) {
+                            key6.className = "played"
+                        } else if (parseInt(key10.innerHTML) === parseInt(letter)) {
+                            key10.className = "played"
+                        } else if (parseInt(key11.innerHTML) === parseInt(letter)) {
+                            key11.className = "played"
+                        }
+                    
+                    }
+                }
+            }
+            
+            ////////////////////////////////////////////////////////////
+            // CHANGING THE LETTER'S CLASS ACCORDING TO WHAT'S LEGAL ///
+            ////////////////////////////////////////////////////////////
+
+            //if last character in equation is a number
+            for (let i=0; i<numberKeys.length; i++) {
+                if (parseInt(lastCharacter) === parseInt(numberKeys[i].innerHTML)) {
+                    //number keys empty
+                    key0.className += " empty"
+                    key1.className += " empty"
+                    key5.className += " empty"
+                    key6.className += " empty"
+                    key10.className += " empty"
+                    key11.className += " empty"
+                    //open bracket empty
+                    key2.className = "empty"
+                    //closed bracket visible
+                    key3.className = "keyClass"
+                    //clear visible
+                    key4.className = "keyClass"
+                    //symbols visible
+                    key7.className = "keyClass"
+                    key8.className = "keyClass"
+                    key12.className = "keyClass"
+                    key13.className = "keyClass"
+                    //backspace visible
+                    key9.className = "keyClass"
+                    //equals visible
+                    key17.className = "keyClass equals"
+                }
+            }
+            //if last character was open bracket
+            if (lastCharacter === "(") {
+                //number keys visible
+                key0.classList.remove("empty")
+                key1.classList.remove("empty")
+                key5.classList.remove("empty")
+                key6.classList.remove("empty")
+                key10.classList.remove("empty")
+                key11.classList.remove("empty")
+                //open bracket empty
+                key2.className = "empty"
+                //closed bracket empty
+                key3.className = "empty"
+                //clear visible
+                key4.className = "keyClass"
+                //symbols empty
+                key7.className = "empty"
+                key8.className = "empty"
+                key12.className = "empty"
+                key13.className = "empty"
+                //backspace visible
+                key9.className = "keyClass"
+                //equals empty
+                key17.className = "empty"
+            //if last character was closed bracket
+            } else if (lastCharacter === ")") {
+                //number keys empty
+                key0.className += " empty"
+                key1.className += " empty"
+                key5.className += " empty"
+                key6.className += " empty"
+                key10.className += " empty"
+                key11.className += " empty"
+                //open bracket empty
+                key2.className = "empty"
+                //closed bracket empty
+                key3.className = "empty"
+                //clear visible
+                key4.className = "keyClass"
+                //symbols visible
+                key7.className = "keyClass"
+                key8.className = "keyClass"
+                key12.className = "keyClass"
+                key13.className = "keyClass"
+                //backspace visible
+                key9.className = "keyClass"
+                //equals visible
+                key17.className = "keyClass equals"
+            //if last character was clear or backspace so input is empty
+            } else if (equation.value.length === 0) {
+                //number keys visible
+                key0.className = "keyClass"
+                key1.className = "keyClass"
+                key5.className = "keyClass"
+                key6.className = "keyClass"
+                key10.className = "keyClass"
+                key11.className = "keyClass"
+                //open bracket visible
+                key2.className = "keyClass"
+                //closed bracket empty
+                key3.className = "empty"
+                //clear visible
+                key4.className = "keyClass"
+                //symbols empty
+                key7.className = "empty"
+                key8.className = "empty"
+                key12.className = "empty"
+                key13.className = "empty"
+                //backspace visible
+                key9.className = "keyClass"
+                //equals empty
+                key17.className = "empty"
+            //if last character was equals
+            } else if (equals === true) {
+                //number keys empty
+                key0.className += " empty"
+                key1.className += " empty"
+                key5.className += " empty"
+                key6.className += " empty"
+                key10.className += " empty"
+                key11.className += " empty"
+                //open bracket empty
+                key2.className = "empty"
+                //closed bracket empty
+                key3.className = "empty"
+                //clear visible
+                key4.className = "keyClass"
+                //symbols visible
+                key7.className = "keyClass"
+                key8.className = "keyClass"
+                key12.className = "keyClass"
+                key13.className = "keyClass"
+                //backspace empty
+                key9.className = "empty"
+                //equals empty
+                key17.className = "empty"
+
+                equals = false
+            }
+            //if last character was symbol
+            for (let i=0; i<symbolKeys.length; i++) {
+                if (lastCharacter === symbolKeys[i].innerHTML) {
+                    //number keys visible
+                    key0.classList.remove("empty")
+                    key1.classList.remove("empty")
+                    key5.classList.remove("empty")
+                    key6.classList.remove("empty")
+                    key10.classList.remove("empty")
+                    key11.classList.remove("empty")
+                    //open bracket visible
+                    key2.className = "keyClass"
+                    //closed bracket empty
+                    key3.className = "empty"
+                    //clear visible
+                    key4.className = "keyClass"
+                    //symbols empty
+                    key7.className = "empty"
+                    key8.className = "empty"
+                    key12.className = "empty"
+                    key13.className = "empty"
+                    //backspace visible
+                    key9.className = "keyClass"
+                    //equals empty
+                    key17.className = "empty"
+                }
+            }
+        }
+    }
+    
+    ////////////////////////////////////////////////////////////
+    ///////////////// HIGHLIGHTING THE BOXES ///////////////////
+    ////////////////////////////////////////////////////////////
+
+    function highlight(number) {
+
+        if (document.getElementById("box5").classList.contains("highlightedBoxes")){
+            return
+        }
+
+        for (let i=0; i<4; i++) {
+            document.getElementById("box" + i)
+        }
+
+        //Changes the box classes based on which one is selected
+        if (number === 0) {
+            box0.className = "highlightedBoxes"
+            box1.className = "boxClass"
+            box2.className = "boxClass"
+            box3.className = "boxClass"
+        } else if (number === 1) {
+            box0.className = "highlightedBoxes"
+            box1.className = "highlightedBoxes"
+            box2.className = "boxClass"
+            box3.className = "boxClass"
+        } else if (number === 2) {
+            box0.className = "highlightedBoxes"
+            box1.className = "highlightedBoxes"
+            box2.className = "highlightedBoxes"
+            box3.className = "boxClass"
+        } else if (number === 3 || number === 4 || number === 5) {
+            box0.className = "highlightedBoxes"
+            box1.className = "highlightedBoxes"
+            box2.className = "highlightedBoxes"
+            box3.className = "highlightedBoxes"
+        }
+
+        //To record the number of large numbers selected
+        largeNumbers = number + 1
+    }
+
+    ////////////////////////////////////////////////////////////
+    /////////////////// BEGINNING THE GAME /////////////////////
+    ////////////////////////////////////////////////////////////
+
+    function go() {
+        begun = true
+
+        //Allows keyboard input
+        document.addEventListener('keydown', () => { inputCharacter(event.key.toUpperCase()) })
+        
+        //Starts timer
+        buttonTimer = setInterval(timer, 1000) //calls function 'timer' every second/1000 milliseconds
+
+        //Fills in target and closest answer boxes
+        document.getElementById("targetBox").innerHTML = Math.floor(Math.random() * 899 ) + 101
+        document.getElementById("closestBox").innerHTML = "0"
+
+        //Creates variable 'target' for 'finder' function
+        target = document.getElementById("targetBox").innerHTML
+
+        //Makes sure you can't press goButton twice
+        document.getElementById("goButton").removeEventListener("click", go)
+
+        //Generates the chosen numbers (large then small)
+        let smallNumbersArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        let largeNumbersArray = [25, 50, 75, 100]
+        let random = 0
+        let smallNumbers = 6 - largeNumbers
+
+        for (let i=0; i < largeNumbers; i++) {
+            random = Math.floor(Math.random() * largeNumbersArray.length)
+            chosenNumbers.push(largeNumbersArray[random])
+            largeNumbersArray.splice(random, 1)
+        }
+
+        for (let i=0; i < smallNumbers; i++) {
+            random = Math.floor(Math.random() * smallNumbersArray.length)
+            chosenNumbers.push(smallNumbersArray[random])
+            smallNumbersArray.splice(random, 1)
+        }
+        
+        //Inputs the chosen numbers in the boxes and calculator keys
+        inputNumbers(chosenNumbers)
+
+        //Makes the number keys visible
+        for (let i = 0; i < keys.length; i++) {
+            let key = document.getElementById("key" + i)
+
+            for (let j = 0; j < chosenNumbers.length; j++) {
+                if (keys[i] === chosenNumbers[j]) {
+                    key.className = "keyClass"
+                }
+            }
+        }
+    }
+
+    function inputNumbers(chosenNumbers) {
+
+        //Inputs the chosen numbers in the boxes
+        for (let i=0; i<6; i++) {
+            let box = document.getElementById("box" + i)
+            box.className = "highlightedBoxes"
+            box.innerHTML = chosenNumbers[i]
+        }
+
+        //Inputs the chosen numbers in the calculator keys
+        document.getElementById("key0")
+        document.getElementById("key1")
+        document.getElementById("key5")
+        document.getElementById("key6")
+        document.getElementById("key10")
+        document.getElementById("key11")
+
+        key0.innerHTML = chosenNumbers[0]
+        key1.innerHTML = chosenNumbers[1]
+        key5.innerHTML = chosenNumbers[2]
+        key6.innerHTML = chosenNumbers[3]
+        key10.innerHTML = chosenNumbers[4]
+        key11.innerHTML = chosenNumbers[5]
+
+        //Inputs the chosen numbers in the 'keys' array instead of hashtags
+        document.getElementById("keys")
+        keys[0] = chosenNumbers[0]
+        keys[1] = chosenNumbers[1]
+        keys[5] = chosenNumbers[2]
+        keys[6] = chosenNumbers[3]
+        keys[10] = chosenNumbers[4]
+        keys[11] = chosenNumbers[5]
+
+    }
+
+    function closestAnswer(answer) {
+        let distance = Math.abs(target - answer)
+
+        if (distance < closestDistance) {
+            closestDistance = distance
+            timeScore = 30-time
+            return answer            
+        } else {
+            document.getElementById("closestBox")
+            return closestBox.innerHTML
+        }
+    }
+
+    function timer() {
+        document.getElementById("goButton").innerHTML = time
+        time--
+
+        if (time === -2) {
+            resultsPage()
+        }
+    }
+
+    ////////////////////////////////////////////////////////////
+    ////////////////////// RESULTS PAGE ////////////////////////
+    ////////////////////////////////////////////////////////////
+
+    function resultsPage() {
+        clearInterval(buttonTimer)
+
+        //Makes elements on the first page invisible
+        //If they aren't all made invisible they will not be seen but will keep their
+        //sizes, margins and padding, and separate things on the next page
+        document.getElementById("selectionInstructions").className = "invisible"
+
+        document.getElementById("middleSection").className = "invisible"
+        document.getElementById("targetBox").className = "invisible"
+        document.getElementById("targetText").className = "invisible"
+        document.getElementById("goButton").className = "invisible"
+
+        document.getElementById("calculator").className = "invisible"
+        document.getElementById("closestText").className = "invisible"
+        document.getElementById("closestBox").className = "invisible"
+        document.getElementById("equation").className = "invisible"
+        document.getElementById("keypad").className = "invisible"
+
+        //Makes elements on the results page visible
+        document.getElementById("resultsBox").classList.remove("invisible")
+        document.getElementById("resultsPageTarget").classList.remove("invisible")
+        document.getElementById("resultsTargetBox").classList.remove("invisible")
+        document.getElementById("sharingInstructions").classList.remove("invisible")
+        document.getElementById("bottomSection").classList.remove("invisible")
+        document.getElementById("solutionBox").classList.remove("invisible")
+        document.getElementById("mySolutionText").classList.remove("invisible")
+        document.getElementById("continueLink").classList.remove("invisible")
+        document.getElementById("continue").classList.remove("invisible")
+
+        //Fills in info on the target, closest answer and time
+        document.getElementById("resultsTargetBox").innerHTML = document.getElementById("targetBox").innerHTML
+        document.getElementById("youGot").innerHTML = "You got: " +document.getElementById("closestBox").innerHTML
+        document.getElementById("after").innerHTML = "After: " +timeScore+ " seconds"
+    
+        //Finds and fills in the calculated 'correct' answer
+        let result = find(chosenNumbers, target)
+        document.getElementById("solutionBox").innerHTML = "Equation:<br/>" +result.equation+ "<br/><br/>Result:<br/>" +result.value+ "<br/><br/>Distance from target:<br/>" +result.distance
+    }
+
+    function _finder(numbers, string, firstRound = true) {
+        
+        _counter++
+    
+        if (numbers.length===0) {
+            return;
+        }
+        
+        if (firstRound) {
+            _distance = 10000000
+            _closest = ""
+            _found = false
+            _counter=0
+        }
+        
+        if (_found || _counter>184320) {
+            return;
+        }
+        
+        for (let i = 0; i < numbers.length; i++) {
+            let copy = [].concat(numbers)
+            let number = copy[i]
+            copy.splice(i, 1)
+            
+            let str1 = string + "*" + number
+            let str2 = string + "+" + number
+            let str3 = string + "-" + number
+            let str4 = string + "/" + number
+            
+            let a = eval(str1.substring(1))
+            let b = eval(str2.substring(1))
+            let c = eval(str3.substring(1))
+            let d = eval(str4.substring(1))
+            
+            if (Number.isInteger(a) && Math.abs(target - a) < Math.abs(_distance)) {
+                _closest = str1.substring(1)
+                _distance = _target - a
+            }
+            if (Number.isInteger(b) && Math.abs(target - b) < Math.abs(_distance)) {
+                _closest = str2.substring(1)
+                _distance = _target - b
+            }
+            if (Number.isInteger(c) && Math.abs(target - c) < Math.abs(_distance)) {
+                _closest = str3.substring(1)
+                _distance = _target - c
+            }
+            if (Number.isInteger(d) && Math.abs(target - d) < Math.abs(_distance)) {
+                _closest = str4.substring(1)
+                _distance = _target - d
+            }
+            if (_distance === 0) { return }
+            _finder(copy, str1, false)
+            _finder(copy, str2, false)
+            _finder(copy, str3, false)
+            _finder(copy, str4, false)
+        }
+    }
+
+    function find(array, target) {
+        _target = target
+        _finder(array,"")
+        return {equation: _closest, value: eval(_closest), distance: _distance}
+    }
+
+</script>
+
+</html>
